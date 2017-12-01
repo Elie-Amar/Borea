@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="C:\Users\eliea\OneDrive\Documents\GitHub\POO_BOREA\Borea\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.2"
+        sha1="c82741bc129dd5f99f11a4ab8666ae24262053b6">
+        <dex dex="C:\Users\eliea\OneDrive\Documents\GitHub\POO_BOREA\Borea\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run_269f3246ceaebafc16b58b10206c7e7c1ee7d2c8\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\eliea\OneDrive\Documents\GitHub\POO_BOREA\Borea\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.2"
+        sha1="c21a9b35218a87161b8a49622ede40ec38d6771a">
+        <dex dex="C:\Users\eliea\OneDrive\Documents\GitHub\POO_BOREA\Borea\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_bdb426b23eeb4f5b582e67a84dfe5fbe7b9c5d9d\classes.dex" />
+    </item>
+
+</items>
