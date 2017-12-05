@@ -1,6 +1,7 @@
 package uqac.eslie.nova;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity
     Fragment map;
     Fragment account;
     Fragment chart;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -153,9 +155,6 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 
         }
-        SugarContext.terminate();
-
-        SugarContext.init(getApplicationContext());
 
     }
 

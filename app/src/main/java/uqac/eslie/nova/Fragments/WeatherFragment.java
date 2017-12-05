@@ -2,6 +2,7 @@ package uqac.eslie.nova.Fragments;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -219,7 +220,21 @@ public class WeatherFragment extends Fragment implements LocationListener {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_weather, container, false);
 
-        //if(needToUpdate()) {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.INTERNET}, 1);
+
+        GPSTracker gps = new GPSTracker(getContext());
+        if(!gps.isGPSEnabled)
+        {
+            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+
+
+        }
+        else {
+            //if(needToUpdate()) {
             myTxtTask = new MyAsyncTaskTxt(this);
             myTxtTask.delegate = this;
             myTxtTask.execute(kp27Url);
@@ -227,36 +242,38 @@ public class WeatherFragment extends Fragment implements LocationListener {
             myTxtTask = new MyAsyncTaskTxt(this);
             myTxtTask.delegate = this;
             myTxtTask.execute(kp3Url);
-    //}
+            //}
 
-        myJsonTask = new MyAsyncTaskJsonKP(this);
-        myJsonTask.delegate = this;
-        myJsonTask.execute(kp1Url);
+            myJsonTask = new MyAsyncTaskJsonKP(this);
+            myJsonTask.delegate = this;
+            myJsonTask.execute(kp1Url);
 
-        myJsonTask2 = new MyAsyncTaskJsonWeather(this);
-        myJsonTask2.delegate = this;
-        myJsonTask2.execute(getWeatherURL());
+            myJsonTask2 = new MyAsyncTaskJsonWeather(this);
+            myJsonTask2.delegate = this;
+            myJsonTask2.execute(getWeatherURL());
 
-        // toasting loading
-        Toast.makeText(
-                this.getContext(),
-                "Chargement des données...",
-                Toast.LENGTH_LONG).show();
 
-        chartKp_today =  root.findViewById(R.id.chartKP_today);
-        chartKp_tomorrow = root.findViewById(R.id.chartKP_tomorrow);
-        chartKp_week = root.findViewById(R.id.chartKP_week);
+            // toasting loading
+            Toast.makeText(
+                    this.getContext(),
+                    "Chargement des données...",
+                    Toast.LENGTH_LONG).show();
 
-        chartCloud_today =  root.findViewById(R.id.chartCloud_today);
-        chartCloud_tomorrow =  root.findViewById(R.id.chartCloud_tomorrow);
-        chartCloud_week = root.findViewById(R.id.chartCloud_week);
-        if(DataBaseHelper.getCurrentWeatherGraph() == 0 || DataBaseHelper.getCurrentWeatherGraph() ==-1){
+            chartKp_today = root.findViewById(R.id.chartKP_today);
+            chartKp_tomorrow = root.findViewById(R.id.chartKP_tomorrow);
+            chartKp_week = root.findViewById(R.id.chartKP_week);
 
-            chartKp_week.setVisibility(View.INVISIBLE);
-            chartCloud_week.setVisibility(View.INVISIBLE);
-            if( DataBaseHelper.getCurrentWeatherGraph() ==-1){
-                chartKp_tomorrow.setVisibility(View.INVISIBLE);
-                chartCloud_tomorrow.setVisibility(View.INVISIBLE);
+            chartCloud_today = root.findViewById(R.id.chartCloud_today);
+            chartCloud_tomorrow = root.findViewById(R.id.chartCloud_tomorrow);
+            chartCloud_week = root.findViewById(R.id.chartCloud_week);
+            if (DataBaseHelper.getCurrentWeatherGraph() == 0 || DataBaseHelper.getCurrentWeatherGraph() == -1) {
+
+                chartKp_week.setVisibility(View.INVISIBLE);
+                chartCloud_week.setVisibility(View.INVISIBLE);
+                if (DataBaseHelper.getCurrentWeatherGraph() == -1) {
+                    chartKp_tomorrow.setVisibility(View.INVISIBLE);
+                    chartCloud_tomorrow.setVisibility(View.INVISIBLE);
+                }
             }
         }
        // setDataForKP();
@@ -275,35 +292,16 @@ public class WeatherFragment extends Fragment implements LocationListener {
 
     private void generateKPDataToday() {
         int numSubcolumns = 1;
-        int numColumns = 11;
+        int numColumns = 9;
 
         // Column can have many subcolumns, here by default I use 1 subcolumn in each of 8 columns.
         List<Column> columns = new ArrayList<Column>();
         List<SubcolumnValue> values;
-        for (int i = 3; i < numColumns; ++i) {
+        for (int i = 1; i < numColumns; ++i) {
 
             values = new ArrayList<SubcolumnValue>();
             for (int j = 0; j < numSubcolumns; ++j) {
-                if(i%numColumns == 9)
-                {
-
-                        values.add(new SubcolumnValue(Integer.parseInt(kpArrayTodayAndTomorrow.get(1)[1]), chooseColorKP(Integer.parseInt(kpArrayTodayAndTomorrow.get(1)[1]))));
-
-                }
-                else if(i%numColumns == 10)
-                {
-
-                        values.add(new SubcolumnValue(Integer.parseInt(kpArrayTodayAndTomorrow.get(2)[1]), chooseColorKP(Integer.parseInt(kpArrayTodayAndTomorrow.get(2)[1]))));
-
-                }
-                else
-                {
-                   
-                        values.add(new SubcolumnValue(Integer.parseInt(kpArrayTodayAndTomorrow.get((i)%numColumns)[1]), chooseColorKP(Integer.parseInt(kpArrayTodayAndTomorrow.get((i)%numColumns)[1]))));
-                }
-
-
-
+                values.add(new SubcolumnValue(Integer.parseInt(kpArrayTodayAndTomorrow.get((i)%numColumns)[1]), chooseColorKP(Integer.parseInt(kpArrayTodayAndTomorrow.get((i)%numColumns)[1]))));
             }
 
 
@@ -321,14 +319,15 @@ public class WeatherFragment extends Fragment implements LocationListener {
             for (int i = 0; i< 8; i++){
                 valuesX.add((float)i);
             }
+            labelsX.add("19-22h");
+            labelsX.add("22-1h");
             labelsX.add("1-4h");
             labelsX.add("4-7h");
             labelsX.add("7-10h");
             labelsX.add("10-13h");
             labelsX.add("13-16h");
             labelsX.add("16-19h");
-            labelsX.add("19-22h");
-            labelsX.add("22-1h");
+
 
             Axis axisX = Axis.generateAxisFromCollection(valuesX,labelsX);
             Axis axisY = new Axis().setHasLines(true);
@@ -350,33 +349,16 @@ public class WeatherFragment extends Fragment implements LocationListener {
 
     private void generateKPDataTomorrow() {
         int numSubcolumns = 1;
-        int numColumns = 11;
+        int numColumns = 9;
 
         // Column can have many subcolumns, here by default I use 1 subcolumn in each of 8 columns.
         List<Column> columns = new ArrayList<Column>();
         List<SubcolumnValue> values;
-        for (int i = 3; i < numColumns; ++i) {
+        for (int i = 1; i < numColumns; ++i) {
 
             values = new ArrayList<SubcolumnValue>();
             for (int j = 0; j < numSubcolumns; ++j) {
-                if(i%numColumns == 9)
-                {
-
-                        values.add(new SubcolumnValue(Integer.parseInt(kpArrayTodayAndTomorrow.get(1)[2]), chooseColorKP(Integer.parseInt(kpArrayTodayAndTomorrow.get(1)[2]))));
-
-                }
-                else if(i%numColumns == 10)
-                {
-
-                        values.add(new SubcolumnValue(Integer.parseInt(kpArrayTodayAndTomorrow.get(2)[2]), chooseColorKP(Integer.parseInt(kpArrayTodayAndTomorrow.get(2)[2]))));
-                }
-                else
-                {
-
-
-                        values.add(new SubcolumnValue(Integer.parseInt(kpArrayTodayAndTomorrow.get((i) % numColumns)[2]), chooseColorKP(Integer.parseInt(kpArrayTodayAndTomorrow.get((i) % numColumns)[2]))));
-                }
-
+                values.add(new SubcolumnValue(Integer.parseInt(kpArrayTodayAndTomorrow.get((i) % numColumns)[2]), chooseColorKP(Integer.parseInt(kpArrayTodayAndTomorrow.get((i) % numColumns)[2]))));
             }
 
 
@@ -394,14 +376,15 @@ public class WeatherFragment extends Fragment implements LocationListener {
             for (int i = 0; i< 8; i++){
                 valuesX.add((float)i);
             }
+            labelsX.add("19-22h");
+            labelsX.add("22-1h");
             labelsX.add("1-4h");
             labelsX.add("4-7h");
             labelsX.add("7-10h");
             labelsX.add("10-13h");
             labelsX.add("13-16h");
             labelsX.add("16-19h");
-            labelsX.add("19-22h");
-            labelsX.add("22-1h");
+
 
             Axis axisX = Axis.generateAxisFromCollection(valuesX,labelsX);
             Axis axisY = new Axis().setHasLines(true);
